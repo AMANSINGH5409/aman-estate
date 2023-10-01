@@ -348,26 +348,29 @@ const CreateListing = () => {
           <p className="text-red-500 text-sm font-medium">
             {imageUploadError && imageUploadError}
           </p>
-          {formData.imageUrls.length !== 0 &&
-            formData.imageUrls.map((url, index) => (
-              <div
-                className="flex justify-between p-3 border items-center"
-                key={index}
-              >
-                <img
-                  src={url}
-                  alt="listing image"
-                  className="w-20 h-20 object-contain rounded-lg"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage(index)}
-                  className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75"
+          <div className="flex flex-wrap gap-2">
+            {formData.imageUrls.length !== 0 &&
+              formData.imageUrls.map((url, index) => (
+                <div
+                  className="flex flex-col p-2 border items-center rounded-lg"
+                  key={index}
                 >
-                  Delete
-                </button>
-              </div>
-            ))}
+                  <img
+                    className="w-20 h-20 object-cover rounded-md"
+                    src={url}
+                    alt="listing image"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    className="p-2 text-red-700 text-sm font-medium rounded-lg uppercase hover:opacity-75"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+          </div>
+
           <button
             disabled={loading || uploading}
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
