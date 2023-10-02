@@ -25,6 +25,7 @@ import { Link } from "react-router-dom";
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const fileRef = useRef(null);
+  const listRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
@@ -149,6 +150,30 @@ const Profile = () => {
     }
   };
 
+  useEffect(() => {
+    if (userListing.length > 0 && listRef && listRef.current) {
+      listRef.current.scrollIntoView({ behaviour: "smooth" });
+    }
+  }, [userListing]);
+
+  const handleListingDelete = async (listingId) => {
+    try {
+      setUserListing((prev) =>
+        prev.filter((listing) => listing._id !== listingId)
+      );
+
+      const data = await fetch(`/api/listing/delete/${listingId}`, {
+        method: "DELETE",
+      });
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -242,40 +267,46 @@ const Profile = () => {
       <p className="text-red-700 mt-5 text-sm font-medium">
         {showListingError ? "Error showing listings" : ""}
       </p>
-
-      {userListing.length > 0 && (
-        <div className="flex flex-col gap-4">
-          <h1 className="text-center text-2xl font-semibold">Your Listings</h1>
-          {userListing.map((listing) => (
-            <div
-              key={listing._id}
-              className="border rounded-lg p-3 flex items-center gap-4 justify-between"
-            >
-              <Link to={`/listing/${listing._id}`}>
-                <img
-                  className="h-16 w-16 object-cover rounded-lg"
-                  src={listing.imageUrls[0]}
-                  alt="listing image"
-                />
-              </Link>
-              <Link
-                className="flex-1 text-slate-700 font-semibold hover:underline truncate"
-                to={`/listing/${listing._id}`}
+      <div ref={listRef}>
+        {userListing.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <h1 className="text-center text-2xl font-semibold">
+              Your Listings
+            </h1>
+            {userListing.map((listing) => (
+              <div
+                key={listing._id}
+                className="border rounded-lg p-3 flex items-center gap-4 justify-between"
               >
-                <p>{listing.name}</p>
-              </Link>
-              <div className="flex flex-col gap-2">
-                <button className="text-red-700 text-sm font-medium uppercase">
-                  Delete
-                </button>
-                <button className="text-green-700 text-sm font-medium uppercase">
-                  Edit
-                </button>
+                <Link to={`/listing/${listing._id}`}>
+                  <img
+                    className="h-16 w-16 object-cover rounded-lg"
+                    src={listing.imageUrls[0]}
+                    alt="listing image"
+                  />
+                </Link>
+                <Link
+                  className="flex-1 text-slate-700 font-semibold hover:underline truncate"
+                  to={`/listing/${listing._id}`}
+                >
+                  <p>{listing.name}</p>
+                </Link>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={() => handleListingDelete(listing._id)}
+                    className="text-red-700 text-sm font-medium uppercase"
+                  >
+                    Delete
+                  </button>
+                  <button className="text-green-700 text-sm font-medium uppercase">
+                    Edit
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
