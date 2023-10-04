@@ -10,7 +10,6 @@ const Header = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Chala");
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set("searchTerm", searchTerm);
     const searchQuery = urlParams.toString();
