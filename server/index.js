@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
@@ -19,6 +20,14 @@ app.use(cookieParser());
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRoute);
+
+//TO DEPLOY THE APP
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "client", "dist", "index.html")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname));
+});
 
 //Error Handling Middleware
 app.use((err, req, res, next) => {
