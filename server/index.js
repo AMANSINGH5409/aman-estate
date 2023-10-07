@@ -23,10 +23,10 @@ app.use("/api/listing", listingRoute);
 
 //TO DEPLOY THE APP
 const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, "client", "dist", "index.html")));
+app.use(express.static(path.join(__dirname, "/client/dist")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname));
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
 });
 
 //Error Handling Middleware
